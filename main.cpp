@@ -8,7 +8,7 @@ using namespace std;
 //Class
 
 // Constants
-const string filename = "intern.txt";
+const string FILENAME = "intern.txt";
 // ############
 
 //Prototypes
@@ -45,8 +45,8 @@ void addApp()
     cout << "Company Name: " << compName << "\t"
          << "Position Name: " << posName << "\t"
          << "Response: " << currResp << endl;
-    cout << "Confirm (y,n) ?" << endl
-         << endl;
+    cout << "Confirm (y,n)? " << endl;
+
 
     cin >> confirm;
     if (confirm == 'n')
@@ -57,7 +57,7 @@ void addApp()
     {
         App app(compName, posName, currResp);
         ofstream myfile;
-        myfile.open(filename, ios::app);
+        myfile.open(FILENAME, ios::app);
         myfile << app.getCompName() << ' ' << app.getPosName() << ' ' << app.getResponse() << ' ' << app.getDate() << endl;
         myfile.close();
     }
@@ -69,17 +69,97 @@ void display()
 {
     ifstream myfile;
     string str;
+    char choice;
 
-    myfile.open(filename);
+    myfile.open(FILENAME);
     cout << endl;
-    cout << "********Internship Application********" << endl;
+    cout << "************ Internship Application ***********" << endl;
+    cout << endl;
     while (getline(myfile, str))
     {
         cout << str << "\n";
     }
+    cout << endl;
+
     cout << "**************************************" << endl;
+    cout << endl;
+    myfile.close();
 }
 //###############################
+
+int lineCount(){
+    ifstream myfile;
+    int counter = 0;
+    string str;
+
+    myfile.open(FILENAME);
+    while (getline(myfile, str))
+    {
+        counter++;
+    }
+    myfile.close();
+    return counter;
+}
+
+void updateApp(){
+    int line;
+    int maxLine = lineCount();
+    display();
+    string str1, str2, str3;
+    App changedApp;
+    cout << "Which line would you like to change?" << endl;
+    cin >> line;
+    if(line > maxLine){
+        cout << "Please Enter a valid number." << endl;
+        return;
+    }
+    cout << "Enter the new line in the format: Company-Name Position-Name Current-Response" << endl;
+    cin >> str1 >> str2 >> str3;
+    changedApp.setCompName(&str1);
+    changedApp.setPosName(&str2);
+    changedApp.setResponse(&str3);
+
+    string fLine;
+    ifstream myfile;
+    ofstream tempFile;
+
+    myfile.open(FILENAME);
+    tempFile.open("temp.txt");
+
+    for(int i = 0; i < maxLine; i++){
+
+        if(line == i){
+            tempFile << changedApp.getCompName() << ' ' << changedApp.getPosName() << ' '
+                    << changedApp.getResponse() << ' ' << changedApp.getDate() <<endl;
+        }else{
+            getline(myfile, fLine);
+            tempFile << fLine << endl;
+        }
+        myfile.close();
+        tempFile.close();
+    }
+
+
+        // string str;
+        // fstream myfile;
+        // myfile.open(FILENAME);
+        // for(int i = 0; i < line; i++){
+        //     getline(myfile, str);
+        //     myfile << str << endl;
+        // }
+        // cout << "Enter the new line in the format: Company-Name Position-Name Current-Response" << endl;
+        // cin >> str1 >> str2 >> str3;
+        // changedApp.setCompName(&str1);
+        // changedApp.setPosName(&str2);
+        // changedApp.setResponse(&str3);
+        // myfile << changedApp.getCompName() << ' ' << changedApp.getPosName() << ' ' 
+        //         << changedApp.getResponse() << ' ' << changedApp.getDate() <<endl;
+        // string copy;
+        // while(getline(myfile, copy)){
+        //     myfile << copy;
+        // }
+        // myfile.close();
+}
 
 void menu()
 {
@@ -131,5 +211,6 @@ int main()
     // app1.toString();
     // app2.toString();
     menu();
+    //cout << "Number of Lines: " << lineCount() << endl;
     return 0;
 }
