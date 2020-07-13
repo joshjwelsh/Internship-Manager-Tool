@@ -9,6 +9,7 @@ using namespace std;
 
 // Constants
 const string FILENAME = "intern.txt";
+const string TEMPNAME = "temp.txt";
 // ############
 
 //Prototypes
@@ -17,6 +18,7 @@ void addApp();
 void deleteApp();
 void stat();
 void updateApp();
+void createAfterUpdate();
 //##############
 
 // Append intern.txt
@@ -70,14 +72,15 @@ void display()
     ifstream myfile;
     string str;
     char choice;
-
+    int counter =  1;
     myfile.open(FILENAME);
     cout << endl;
     cout << "************ Internship Application ***********" << endl;
     cout << endl;
     while (getline(myfile, str))
     {
-        cout << str << "\n";
+        cout << counter << ")" << str << "\n";
+        counter++;
     }
     cout << endl;
 
@@ -102,63 +105,77 @@ int lineCount(){
 }
 
 void updateApp(){
+
     int line;
-    int maxLine = lineCount();
-    display();
-    string str1, str2, str3;
+    string fLine, str1, str2, str3;
+    ifstream myfile;
+    ofstream tempFile;
     App changedApp;
+
+    int count = 1;
+    int maxLine = lineCount();
+
+    display();
+   
     cout << "Which line would you like to change?" << endl;
     cin >> line;
+
     if(line > maxLine){
         cout << "Please Enter a valid number." << endl;
         return;
     }
+
     cout << "Enter the new line in the format: Company-Name Position-Name Current-Response" << endl;
+    cout << endl;
     cin >> str1 >> str2 >> str3;
+
     changedApp.setCompName(&str1);
     changedApp.setPosName(&str2);
     changedApp.setResponse(&str3);
 
-    string fLine;
-    ifstream myfile;
-    ofstream tempFile;
-
     myfile.open(FILENAME);
-    tempFile.open("temp.txt");
+    tempFile.open(TEMPNAME);
 
-    for(int i = 0; i < maxLine; i++){
+    while(!myfile.eof()){
+        getline(myfile, fLine);
 
-        if(line == i){
+        if(count == line){
+            ++count;
             tempFile << changedApp.getCompName() << ' ' << changedApp.getPosName() << ' '
-                    << changedApp.getResponse() << ' ' << changedApp.getDate() <<endl;
+                     << changedApp.getResponse() << ' ' << changedApp.getDate() << endl;
         }else{
-            getline(myfile, fLine);
+            ++count;
             tempFile << fLine << endl;
         }
-        myfile.close();
-        tempFile.close();
     }
 
+    myfile.close();
+    tempFile.close();
+    createAfterUpdate();
+}
 
-        // string str;
-        // fstream myfile;
-        // myfile.open(FILENAME);
-        // for(int i = 0; i < line; i++){
-        //     getline(myfile, str);
-        //     myfile << str << endl;
-        // }
-        // cout << "Enter the new line in the format: Company-Name Position-Name Current-Response" << endl;
-        // cin >> str1 >> str2 >> str3;
-        // changedApp.setCompName(&str1);
-        // changedApp.setPosName(&str2);
-        // changedApp.setResponse(&str3);
-        // myfile << changedApp.getCompName() << ' ' << changedApp.getPosName() << ' ' 
-        //         << changedApp.getResponse() << ' ' << changedApp.getDate() <<endl;
-        // string copy;
-        // while(getline(myfile, copy)){
-        //     myfile << copy;
-        // }
-        // myfile.close();
+
+void createAfterUpdate(){
+
+    ofstream newFile;
+    ifstream tFile;
+    string newLine;
+
+    newFile.open(FILENAME);
+    tFile.open(TEMPNAME);
+    while (getline(tFile, newLine))
+    {
+        char test = newLine[0];
+        if (!isalpha(test)){
+            break;
+        }
+        else{
+            newFile << newLine << endl;
+        } 
+    }
+    newFile.close();
+    tFile.close();
+    remove("temp.txt");
 }
 
 void menu()
@@ -177,6 +194,18 @@ void menu()
 
         cout << endl;
         cin >> choice;
+        if(isalpha(choice)){
+            cout << "Fatal Error. Input number not character." << endl;
+            cout << endl << endl;
+
+            return;
+        }
+        if(choice < 1 || choice > 6){
+            cout << "Invalid number." << endl;
+            cout << endl << endl;
+            return;
+        }
+
         switch (choice)
         {
         case 1:
@@ -186,7 +215,7 @@ void menu()
             addApp();
             break;
         case 3:
-            //updateApp();
+            updateApp();
             break;
         case 4:
             //deleteApp();
@@ -205,12 +234,6 @@ void menu()
 
 int main()
 {
-    // App app1("Reddit", "Software Engineer", "waiting");
-    // App app2("Akuna", "Data Analysis", "waiting");
-
-    // app1.toString();
-    // app2.toString();
-    menu();
-    //cout << "Number of Lines: " << lineCount() << endl;
+    menu();  
     return 0;
 }

@@ -23,5 +23,4 @@ private:
     string posName;
     string response;
     string dateApplied;
-
 };
