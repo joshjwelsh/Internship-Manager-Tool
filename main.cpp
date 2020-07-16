@@ -79,7 +79,7 @@ void display()
     cout << endl;
     while (getline(myfile, str))
     {
-        cout << counter << ")" << str << "\n";
+        cout << counter << ") " << str << "\n";
         counter++;
     }
     cout << endl;

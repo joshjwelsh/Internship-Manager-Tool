@@ -23,4 +23,4 @@ And now you can keep track of all your applications, and edit them from the term
 
 #### What is working?
 
-At the time of me writing this 08/July/2020, the display applications and add applications features are working.  
+At the time of me writing this 15/July/2020, the display, add and update applications features are working.  
