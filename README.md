@@ -1,6 +1,6 @@
 # Internship Manager Tool
 
-### Currently under development.
+### Working as expected. 
 
 This is a commmand line tool to help manage internship applications. 
 
