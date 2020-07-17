@@ -154,6 +154,43 @@ void updateApp(){
     createAfterUpdate();
 }
 
+void deleteApp(){
+
+    fstream myfile;
+    fstream tempFile;
+    myfile.open(FILENAME, ios::in);
+    tempFile.open(TEMPNAME, ios::out);
+    int line;
+    int count = 1;
+    int maxLine = lineCount();
+    string str;
+
+    display();
+
+    cout << "Which line would you like to delete?" << endl;
+    cin >> line;
+
+    if (line > maxLine)
+    {
+        cout << "Please Enter a valid number." << endl;
+        return;
+    }
+
+    while(!myfile.eof()){
+        getline(myfile,str);
+        if(line == count){
+            count++;
+            continue;
+        }else{
+            count++;
+            tempFile << str << endl;
+        }
+    }
+    myfile.close();
+    tempFile.close();
+    createAfterUpdate();
+}
+
 
 void createAfterUpdate(){
 
@@ -218,7 +255,7 @@ void menu()
             updateApp();
             break;
         case 4:
-            //deleteApp();
+            deleteApp();
             break;
         case 5:
             //stat();
